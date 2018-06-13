@@ -5,53 +5,59 @@ var radius = Math.min(width, height) / 2;
 
 // Breadcrumb dimensions: width, height, spacing, width of tip/tail.
 var b = {
-  w: 75, h: 30, s: 3, t: 10
+  w: 90, h: 30, s: 3, t: 10
 };
 
 // Mapping of step names to colors.
 var colors = {
-  "Egypt": "#C09300",
-  "Russia": "#0039A6",
-  "Saudi Arabia": "#006C35",
-  "Uruguay": "#0038A8",
-  "Iran": "#239F40",
-  "Morocco": "#006233",
+  "Egito": "#C09300",
+  "Rússia": "#0039A6",
+  "Arábia Saudita": "#006C35",
+  "Uruguai": "#0038A8",
+  "Irã": "#239F40",
+  "Marrocos": "#006233",
   "Portugal": "#DB161B",
-  "Spain": "#FFC400",
-  "Australia": "#012169",
-  "Denmark": "#C60C30",
-  "France": "#002395",
+  "Espanha": "#FFC400",
+  "Austrália": "#012169",
+  "Dinamarca": "#C60C30",
+  "França": "#002395",
   "Peru": "#D91023",
   "Argentina": "#74ACDF",
-  "Croatia": "#FF0000",
-  "Iceland": "#02529C",
-  "Nigeria": "#008751",
-  "Brazil": "#009B3A",
+  "Croácia": "#FF0000",
+  "Islândia": "#02529C",
+  "Nigéria": "#008751",
+  "Brasil": "#009B3A",
   "Costa Rica": "#002B7F",
-  "Serbia": "#EDB92E",
-  "Switzerland": "#E30A17",
-  "Germany": "#DD0000",
-  "Mexico": "#006847",
-  "South Korea": "#024FA2",
-  "Sweden": "#FECD01",
-  "Belgium": "#FAE042",
-  "England": "#CF142B",
-  "Panama": "#005293",
-  "Tunisia": "#E70013",
-  "Colombia": "#FCD116",
-  "Japan": "#BC002D",
-  "Poland": "#DC143C",
+  "Sérvia": "#EDB92E",
+  "Suíça": "#E30A17",
+  "Alemanha": "#DD0000",
+  "México": "#006847",
+  "Coreia do Sul": "#024FA2",
+  "Suécia": "#FECD01",
+  "Bélgica": "#FAE042",
+  "Inglaterra": "#CF142B",
+  "Panamá": "#005293",
+  "Tunísia": "#E70013",
+  "Colômbia": "#FCD116",
+  "Japão": "#BC002D",
+  "Polônia": "#DC143C",
   "Senegal": "#00853F",
-  "eight": "#1a84b8",
-  "quarter": "#1a8cb8",
-  "semi": "#1a94b8",
-  "final": "#1a9cb8",
-  "win": "#FFD700",
-  "end": "#FFFFFF"
+  "Oitavas": "#1a84b8",
+  "Quartas": "#1a8cb8",
+  "Semi": "#1a94b8",
+  "Final": "#1a9cb8",
+  "Campeão": "#FFD700",
+  "Eliminado": "#bbb0ac"
 };
 
 // Total size of all segments; we set this later, after loading the data.
 var totalSize = 0; 
+
+var order_vector = ['Brasil', 'Espanha', 'Alemanha', 'França', 'Argentina', 'Inglaterra', 'Bélgica', 'Portugal',
+                      'Colômbia', 'Uruguai', 'Peru', 'Polônia', 'Suíça', 'México', 'Croácia', 'Suécia', 'Islândia',
+                      'Dinamarca', 'Rússia', 'Irã', 'Costa Rica', 'Coreia do Sul', 'Japão', 'Sérvia', 'Austrália',
+                      'Senegal', 'Panamá', 'Egito', 'Marrocos', 'Tunísia', 'Arábia Saudita', 'Nigéria', 'Oitavas',
+                      'Quartas', 'Semi', 'Final', 'Campeão', 'Eliminado'];
 
 var vis = d3.select("#chart").append("svg:svg")
     .attr("width", width)
@@ -62,7 +68,8 @@ var vis = d3.select("#chart").append("svg:svg")
 
 var partition = d3.layout.partition()
     .size([2 * Math.PI, radius * radius])
-    .value(function(d) { return d.size; });
+    .value(function(d) { return d.size; })
+    .sort(function(a, b) { return order_vector.indexOf(a.name) - order_vector.indexOf(b.name); });
 
 var arc = d3.svg.arc()
     .startAngle(function(d) { return d.x; })
@@ -72,7 +79,7 @@ var arc = d3.svg.arc()
 
 // Use d3.text and d3.csv.parseRows so that we do not need to have a header
 // row, and can receive the csv as an array of arrays.
-d3.text("AllTeams.csv", function(text) {
+d3.text("groupE.csv", function(text) {
   var csv = d3.csv.parseRows(text);
   var json = buildHierarchy(csv);
   createVisualization(json);
@@ -83,8 +90,8 @@ function createVisualization(json) {
 
   // Basic setup of page elements.
   initializeBreadcrumbTrail();
-  drawLegend();
-  d3.select("#togglelegend").on("click", toggleLegend);
+  //drawLegend();
+  //d3.select("#togglelegend").on("click", toggleLegend);
 
   // Bounding circle underneath the sunburst, to make it easier to detect
   // when the mouse leaves the parent g.
@@ -95,8 +102,10 @@ function createVisualization(json) {
   // For efficiency, filter nodes to keep only those large enough to see.
   var nodes = partition.nodes(json)
       .filter(function(d) {
-      return (d.dx > 0.005); // 0.005 radians = 0.29 degrees
+      return (d.dx > 0.01); // 0.005 radians = 0.29 degrees
       });
+
+  console.log(nodes);
 
   var path = vis.data([json]).selectAll("path")
       .data(nodes)
@@ -118,7 +127,7 @@ function createVisualization(json) {
 // Fade all but the current sequence, and show it in the breadcrumb trail.
 function mouseover(d) {
 
-  var percentage = (100 * d.value ).toPrecision(3);
+  var percentage = Math.floor(100 * d.value);
   var percentageString = percentage + "%";
   if (percentage < 0.1) {
     percentageString = "< 0.1%";
@@ -250,7 +259,7 @@ function updateBreadcrumbs(nodeArray, percentageString) {
 
 }
 
-function drawLegend() {
+/*function drawLegend() {
 
   // Dimensions of legend item: width, height, spacing, radius of rounded rect.
   var li = {
@@ -290,7 +299,7 @@ function toggleLegend() {
   } else {
     legend.style("visibility", "hidden");
   }
-}
+}*/
 
 // Take a 2-column CSV and transform it into a hierarchical structure suitable
 // for a partition layout. The first column is a sequence of step names, from
@@ -306,26 +315,27 @@ function buildHierarchy(csv) {
     }
     var parts = sequence.split("-");
     var currentNode = root;
+
     for (var j = 0; j < parts.length; j++) {
       var children = currentNode["children"];
       var nodeName = parts[j];
       var childNode;
       if (j + 1 < parts.length) {
-   // Not yet at the end of the sequence; move down the tree.
- 	var foundChild = false;
- 	for (var k = 0; k < children.length; k++) {
- 	  if (children[k]["name"] == nodeName) {
- 	    childNode = children[k];
- 	    foundChild = true;
- 	    break;
- 	  }
- 	}
-  // If we don't already have a child node for this branch, create it.
- 	if (!foundChild) {
- 	  childNode = {"name": nodeName, "children": []};
- 	  children.push(childNode);
- 	}
- 	currentNode = childNode;
+         // Not yet at the end of the sequence; move down the tree.
+       	var foundChild = false;
+       	for (var k = 0; k < children.length; k++) {
+       	  if (children[k]["name"] == nodeName) {
+       	    childNode = children[k];
+       	    foundChild = true;
+       	    break;
+       	  }
+       	}
+        // If we don't already have a child node for this branch, create it.
+       	if (!foundChild) {
+       	  childNode = {"name": nodeName, "children": []};
+       	  children.push(childNode);
+       	}
+       	currentNode = childNode;
       } else {
  	// Reached the end of the sequence; create a leaf node.
  	childNode = {"name": nodeName, "size": size};
