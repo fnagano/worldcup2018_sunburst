@@ -5,7 +5,7 @@ var radius = Math.min(width, height) / 2;
 
 // Breadcrumb dimensions: width, height, spacing, width of tip/tail.
 var b = {
-  w: 9*width/80, h: 9*width/160, s: 3, t: width/80
+  w: 9*width/60, h: 9*width/120, s: 3, t: width/60
 };
 
 // Mapping of step names to colors.
@@ -89,10 +89,6 @@ d3.text("AllTeams.csv", function(text) {
 function createVisualization(json) {
 
   // Basic setup of page elements.
-  var width = $("#chart").width();
-  var b = {
-  w: 9*width/80, h: 9*width/160, s: 3, t: width/80
-  };
   initializeBreadcrumbTrail();
 
   // Bounding circle underneath the sunburst, to make it easier to detect
@@ -156,7 +152,6 @@ function mouseover(d) {
 
 // Restore everything to full opacity when moving off the visualization.
 function mouseleave(d) {
-
   // Hide the breadcrumb trail
   d3.select("#trail")
       .style("visibility", "hidden");
@@ -203,6 +198,10 @@ function initializeBreadcrumbTrail() {
 
 // Generate a string that describes the points of a breadcrumb polygon.
 function breadcrumbPoints(d, i) {
+  var width = $("#chart").width();
+  var b = {
+  w: 9*width/60, h: 9*width/120, s: 3, t: width/60
+  };
   var points = [];
   points.push("0,0");
   points.push(b.w + ",0");
@@ -217,7 +216,10 @@ function breadcrumbPoints(d, i) {
 
 // Update the breadcrumb trail to show the current sequence and percentage.
 function updateBreadcrumbs(nodeArray, percentageString) {
-
+  var width = $("#chart").width();
+  var b = {
+  w: 9*width/60, h: 9*width/120, s: 3, t: width/60
+  };
   // Data join; key function combines name and depth (= position in sequence).
   var g = d3.select("#trail")
       .selectAll("g")
@@ -236,7 +238,7 @@ function updateBreadcrumbs(nodeArray, percentageString) {
       .attr("dy", "0.35em")
       .attr("text-anchor", "middle")
       .text(function(d) { return d.name; })
-      .attr('font-size', b.h/4);
+      .attr('font-size', b.h/3.5);
 
   // Set position for entering and updating nodes.
   g.attr("transform", function(d, i) {
@@ -252,7 +254,8 @@ function updateBreadcrumbs(nodeArray, percentageString) {
       .attr("y", b.h / 2)
       .attr("dy", "0.35em")
       .attr("text-anchor", "middle")
-      .text(percentageString);
+      .text(percentageString)
+      .attr('font-size', b.h/3.5);
 
   // Make the breadcrumb trail visible, if it's hidden.
   d3.select("#trail")
