@@ -12,14 +12,6 @@ body {
   width: 100px;
 }
 
-#sequence {
-  width: 100%;
-  height: 70px;
-}
-
-#sequence text {
-  font-weight: 600;
-  fill: #fff;
 }*/
 
 #chart {
@@ -46,3 +38,12 @@ body {
 #percentage {
   font-size: 2.5em;
 }
+
+#sequence {
+  width: 100%;
+  height: 70px;
+}
+
+#sequence text {
+  font-weight: 600;
+  fill: #fff;
