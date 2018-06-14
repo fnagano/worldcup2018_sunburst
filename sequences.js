@@ -235,7 +235,7 @@ function updateBreadcrumbs(nodeArray, percentageString) {
   entering.append("svg:text")
       .attr("x", (b.w + b.t) / 2)
       .attr("y", b.h / 2)
-      .attr("dy", "0.35em")
+      .attr("dy", "0.25em")
       .attr("text-anchor", "middle")
       .text(function(d) { return d.name; })
       .attr('font-size', b.h/3.5);
