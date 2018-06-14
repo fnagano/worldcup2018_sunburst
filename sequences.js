@@ -1,11 +1,11 @@
 // Dimensions of sunburst.
-var width = 750;
-var height = 600;
+var width = $("#chart").width();
+var height = width;
 var radius = Math.min(width, height) / 2;
 
 // Breadcrumb dimensions: width, height, spacing, width of tip/tail.
 var b = {
-  w: 90, h: 30, s: 3, t: 10
+  w: 9*width/80, h: 9*width/160, s: 3, t: width/80
 };
 
 // Mapping of step names to colors.
@@ -60,8 +60,8 @@ var order_vector = ['Brasil', 'Espanha', 'Alemanha', 'França', 'Argentina', 'In
                       'Quartas', 'Semi', 'Final', 'Campeão', 'Eliminado'];
 
 var vis = d3.select("#chart").append("svg:svg")
-    .attr("width", width)
-    .attr("height", height)
+    .attr("preserveAspectRatio", "xMidYMid")
+    .attr("viewBox", "0 0 " + width + " " + height)
     .append("svg:g")
     .attr("id", "container")
     .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
@@ -89,9 +89,11 @@ d3.text("AllTeams.csv", function(text) {
 function createVisualization(json) {
 
   // Basic setup of page elements.
+  var width = $("#chart").width();
+  var b = {
+  w: 9*width/80, h: 9*width/160, s: 3, t: width/80
+  };
   initializeBreadcrumbTrail();
-  //drawLegend();
-  //d3.select("#togglelegend").on("click", toggleLegend);
 
   // Bounding circle underneath the sunburst, to make it easier to detect
   // when the mouse leaves the parent g.
@@ -104,8 +106,6 @@ function createVisualization(json) {
       .filter(function(d) {
       return (d.dx > 0.01); // 0.005 radians = 0.29 degrees
       });
-
-  console.log(nodes);
 
   var path = vis.data([json]).selectAll("path")
       .data(nodes)
@@ -206,11 +206,11 @@ function breadcrumbPoints(d, i) {
   var points = [];
   points.push("0,0");
   points.push(b.w + ",0");
-  points.push(b.w + b.t + "," + (b.h / 2));
+  points.push(b.w + b.t + "," + (b.h/3));
   points.push(b.w + "," + b.h);
   points.push("0," + b.h);
   if (i > 0) { // Leftmost breadcrumb; don't include 6th vertex.
-    points.push(b.t + "," + (b.h / 2));
+    points.push(b.t + "," + (b.h/3));
   }
   return points.join(" ");
 }
@@ -235,7 +235,8 @@ function updateBreadcrumbs(nodeArray, percentageString) {
       .attr("y", b.h / 2)
       .attr("dy", "0.35em")
       .attr("text-anchor", "middle")
-      .text(function(d) { return d.name; });
+      .text(function(d) { return d.name; })
+      .attr('font-size', b.h/4);
 
   // Set position for entering and updating nodes.
   g.attr("transform", function(d, i) {
@@ -258,48 +259,6 @@ function updateBreadcrumbs(nodeArray, percentageString) {
       .style("visibility", "");
 
 }
-
-/*function drawLegend() {
-
-  // Dimensions of legend item: width, height, spacing, radius of rounded rect.
-  var li = {
-    w: 75, h: 30, s: 3, r: 3
-  };
-
-  var legend = d3.select("#legend").append("svg:svg")
-      .attr("width", li.w)
-      .attr("height", d3.keys(colors).length * (li.h + li.s));
-
-  var g = legend.selectAll("g")
-      .data(d3.entries(colors))
-      .enter().append("svg:g")
-      .attr("transform", function(d, i) {
-              return "translate(0," + i * (li.h + li.s) + ")";
-           });
-
-  g.append("svg:rect")
-      .attr("rx", li.r)
-      .attr("ry", li.r)
-      .attr("width", li.w)
-      .attr("height", li.h)
-      .style("fill", function(d) { return d.value; });
-
-  g.append("svg:text")
-      .attr("x", li.w / 2)
-      .attr("y", li.h / 2)
-      .attr("dy", "0.35em")
-      .attr("text-anchor", "middle")
-      .text(function(d) { return d.key; });
-}
-
-function toggleLegend() {
-  var legend = d3.select("#legend");
-  if (legend.style("visibility") == "hidden") {
-    legend.style("visibility", "");
-  } else {
-    legend.style("visibility", "hidden");
-  }
-}*/
 
 // Take a 2-column CSV and transform it into a hierarchical structure suitable
 // for a partition layout. The first column is a sequence of step names, from
