@@ -5,7 +5,7 @@ var radius = Math.min(width, height) / 2;
 
 // Breadcrumb dimensions: width, height, spacing, width of tip/tail.
 var b = {
-  w: 9*width/60, h: 9*width/120, s: 3, t: width/60
+  w: 8*width/60, h: 9*width/120, s: 3, t: width/60
 };
 
 // Mapping of step names to colors.
@@ -200,7 +200,7 @@ function initializeBreadcrumbTrail() {
 function breadcrumbPoints(d, i) {
   var width = $("#chart").width();
   var b = {
-  w: 9*width/60, h: 9*width/120, s: 3, t: width/60
+  w: 8*width/60, h: 9*width/120, s: 3, t: width/60
   };
   var points = [];
   points.push("0,0");
@@ -218,7 +218,7 @@ function breadcrumbPoints(d, i) {
 function updateBreadcrumbs(nodeArray, percentageString) {
   var width = $("#chart").width();
   var b = {
-  w: 9*width/60, h: 9*width/120, s: 3, t: width/60
+  w: 8*width/60, h: 9*width/120, s: 3, t: width/60
   };
   // Data join; key function combines name and depth (= position in sequence).
   var g = d3.select("#trail")
