@@ -128,6 +128,11 @@ function mouseover(d) {
   if (percentage < 0.1) {
     percentageString = "< 0.1%";
   }
+  var sequenceArray = getAncestors(d);
+  var country = sequenceArray[0];
+
+  d3.select('#country')
+      .text(country['name']);
 
   d3.select("#percentage")
       .text(percentageString);
@@ -135,7 +140,6 @@ function mouseover(d) {
   d3.select("#explanation")
       .style("visibility", "");
 
-  var sequenceArray = getAncestors(d);
   updateBreadcrumbs(sequenceArray, percentageString);
 
   // Fade all the segments.
