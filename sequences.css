@@ -1,17 +1,10 @@
 body {
   font-family: 'Open Sans', sans-serif;
-  font-size: 12px;
-  font-weight: 400;
-  background-color: #fff;
-  width: 960px;
-  height: 700px;
-  margin-top: 10px;
-  overflow-x: hidden;
 }
 
-#main {
+/*#main {
   float: left;
-  width: 750px;
+  width: 100%;
 }
 
 #sidebar {
@@ -20,21 +13,19 @@ body {
 }
 
 #sequence {
-  width: 600px;
+  width: 100%;
   height: 70px;
 }
 
-#legend {
-  padding: 10px 0 0 3px;
-}
-
-#sequence text, #legend text {
+#sequence text {
   font-weight: 600;
   fill: #fff;
-}
+}*/
 
 #chart {
+  padding: 30px;
   position: relative;
+  margin: auto;
 }
 
 #chart path {
@@ -43,9 +34,10 @@ body {
 
 #explanation {
   position: absolute;
-  top: 260px;
-  left: 305px;
-  width: 140px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2vw;
   text-align: center;
   color: #666;
   z-index: -1;
