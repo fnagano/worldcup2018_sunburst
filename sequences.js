@@ -186,10 +186,14 @@ function getAncestors(node) {
 
 function initializeBreadcrumbTrail() {
   // Add the svg area.
+  var width = $("#chart").width();
   var trail = d3.select("#sequence").append("svg:svg")
       .attr("width", width)
-      .attr("height", 50)
+      .attr("height", 0.1*width)
       .attr("id", "trail");
+
+  d3.select('#sequence')
+     .attr("height", 0.1*width);
   // Add the label at the end, for the percentage.
   trail.append("svg:text")
     .attr("id", "endlabel")
@@ -220,6 +224,13 @@ function updateBreadcrumbs(nodeArray, percentageString) {
   var b = {
   w: 8*width/60, h: 9*width/120, s: 3, t: width/60
   };
+  d3.select('#sequence')
+      .attr("height", 0.1*width);
+
+  d3.select('#trail')
+      .attr("width", width)
+      .attr("height", 0.1*width);
+
   // Data join; key function combines name and depth (= position in sequence).
   var g = d3.select("#trail")
       .selectAll("g")
@@ -235,7 +246,7 @@ function updateBreadcrumbs(nodeArray, percentageString) {
   entering.append("svg:text")
       .attr("x", (b.w + b.t) / 2)
       .attr("y", b.h / 2)
-      .attr("dy", "0.25em")
+      .attr("dy", "0.3em")
       .attr("text-anchor", "middle")
       .text(function(d) { return d.name; })
       .attr('font-size', b.h/3.5);
@@ -252,7 +263,7 @@ function updateBreadcrumbs(nodeArray, percentageString) {
   d3.select("#trail").select("#endlabel")
       .attr("x", (nodeArray.length + 0.5) * (b.w + b.s))
       .attr("y", b.h / 2)
-      .attr("dy", "0.35em")
+      .attr("dy", "0.25em")
       .attr("text-anchor", "middle")
       .text(percentageString)
       .attr('font-size', b.h/3.5);
