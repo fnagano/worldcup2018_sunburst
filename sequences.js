@@ -100,7 +100,7 @@ function createVisualization(json) {
   // For efficiency, filter nodes to keep only those large enough to see.
   var nodes = partition.nodes(json)
       .filter(function(d) {
-      return (d.dx > 0.01); // 0.005 radians = 0.29 degrees
+      return (d.dx > 0.005); // 0.005 radians = 0.29 degrees
       });
 
   var path = vis.data([json]).selectAll("path")
@@ -123,7 +123,7 @@ function createVisualization(json) {
 // Fade all but the current sequence, and show it in the breadcrumb trail.
 function mouseover(d) {
 
-  var percentage = Math.floor(100 * d.value);
+  var percentage = Math.round(100 * d.value);
   var percentageString = percentage + "%";
   if (percentage < 0.1) {
     percentageString = "< 0.1%";
